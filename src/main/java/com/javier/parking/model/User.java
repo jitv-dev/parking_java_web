@@ -32,9 +32,7 @@ public class User implements UserDetails {
     private String username;
 
     @NotBlank(message = "Password no puede estar vacio")
-    @Size(min = 8, max = 20)
     @Column(nullable = false)
-    @Pattern(regexp = ".*\\d.*", message = "La contraseña debe contener al menos un número")
     private String password;
 
     @Enumerated(EnumType.STRING)
