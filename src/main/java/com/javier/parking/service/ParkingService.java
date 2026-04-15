@@ -13,9 +13,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class ParkingService {
@@ -28,7 +28,7 @@ public class ParkingService {
     private AppSettingsService appSettingsService;
 
     private record DatosBloqueados(double costo, double minutes, LocalDateTime exitTime, LocalDateTime expiresAt) {}
-    private final Map<String, DatosBloqueados> datosBloqueados = new HashMap<>();
+    private final Map<String, DatosBloqueados> datosBloqueados = new ConcurrentHashMap<>();
 
     public List<ParkingSlot> findAll() {
         return parkingSlotRepository.findAll();

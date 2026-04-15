@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 freezeTimer.style.color = "#d93025"; // Rojo para indicar expiración
 
                 // Opcional: Deshabilitar el botón de pago si expiró
-                const payButton = document.querySelector('button[type="submit"][style*="background: #ffffff"]');
+                const payButton = document.querySelector('.btn-pagar');
                 if(payButton) {
                     payButton.disabled = true;
                     payButton.style.opacity = "0.5";
