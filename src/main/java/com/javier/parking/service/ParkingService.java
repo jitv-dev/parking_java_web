@@ -93,8 +93,8 @@ public class ParkingService {
         boolean isAdmin = auth != null && auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-        if (!isAdmin && minutos > 5) {
-            throw new RuntimeException("Seguridad: Han pasado más de 5 minutos. Solo un Administrador puede eliminar este registro.");
+        if (!isAdmin && minutos > 2) {
+            throw new RuntimeException("Seguridad: Han pasado más de 2 minutos. Solo un Administrador puede eliminar este registro.");
         }
 
         parkingSlotRepository.delete(slot);

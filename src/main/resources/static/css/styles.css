@@ -3,10 +3,16 @@
 body {
     min-height: 100vh;
     background: #0d0e10;
+    /* Cambiado para que el Navbar funcione arriba */
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     font-family: 'DM Sans', sans-serif;
+}
+
+/* ── Centrado exclusivo para el Login ── */
+/* Esto centra vertical y horizontalmente SOLO el login, respetando el dashboard */
+.login-card:not(.dashboard-card) {
+    margin: auto;
 }
 
 .login-card {
@@ -208,13 +214,8 @@ body {
     transition: background 0.15s, transform 0.1s;
 }
 
-.btn-action:hover {
-    background: #e6b800;
-}
-
-.btn-action:active {
-    transform: scale(0.95);
-}
+.btn-action:hover { background: #e6b800; }
+.btn-action:active { transform: scale(0.95); }
 
 /* ── Variantes y Utilidades para el Dashboard ── */
 .dashboard-card { width: 100%; }
@@ -231,7 +232,6 @@ body {
     margin-bottom: 1.25rem;
 }
 
-/* --- Títulos de Panel en Dashboard --- */
 .panel-title {
     font-family: 'Barlow Condensed', sans-serif;
     font-weight: 700;
@@ -242,17 +242,13 @@ body {
     margin-bottom: 0;
 }
 
-/* --- Ajuste de Alertas en Dashboard --- */
 .mt-dashboard-alert {
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
     display: block;
 }
 
-/* Si no hay mensaje, el formulario necesita algo de aire respecto al título */
-.panel-title + .form-inline {
-    margin-top: 1.5rem;
-}
+.panel-title + .form-inline { margin-top: 1.5rem; }
 
 .form-inline { display: flex; gap: 10px; align-items: flex-end; }
 .field-inline { flex: 1; margin-bottom: 0; }
@@ -286,14 +282,14 @@ body {
 /* ── Modal de Cobro ── */
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.85); /* Fondo oscuro semitransparente */
+    background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(4px);
     display: flex; justify-content: center; align-items: center;
     z-index: 1000;
 }
 
 .modal-content {
-    background: #F5C400; /* Fondo amarillo para destacar */
+    background: #F5C400;
     padding: 2.5rem;
     border-radius: 12px;
     width: 400px;
@@ -308,17 +304,19 @@ body {
 }
 
 .checkout-details {
-    background: rgba(17, 18, 20, 0.1); /* Fondo sutilmente oscuro */
+    background: rgba(17, 18, 20, 0.1);
     padding: 1.5rem; border-radius: 8px; color: #111214;
     margin-bottom: 1.5rem;
 }
 
 .checkout-details p { margin-bottom: 0.5rem; font-size: 15px; font-weight: 500;}
 .checkout-details strong { font-size: 24px; font-family: 'Barlow Condensed', sans-serif; }
-
 .timer-text { font-size: 13px !important; color: #5a4800; font-weight: 700; margin-top: 1rem; }
 
-/* Ajustes de inputs dentro del modal amarillo */
+/* Sobrescribiendo labels y separaciones para el modal amarillo */
+.modal-content .field { margin-bottom: 1.5rem; }
+.modal-content .field label { color: #111214; }
+
 .modal-content select.search-input {
     background: #ffffff; color: #111214; border: 1px solid #c29b00;
 }
@@ -331,6 +329,15 @@ body {
     cursor: pointer; margin-top: 10px; transition: transform 0.1s;
 }
 .btn-cancelar:active { transform: scale(0.99); }
+
+.btn-pagar {
+    width: 100%; background: #ffffff; color: #111214;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px;
+    text-transform: uppercase; border: none; padding: 13px; border-radius: 6px;
+    cursor: pointer; margin-top: 0; transition: transform 0.1s;
+}
+.btn-pagar:hover { background: #f0f0f0; }
+.btn-pagar:active { transform: scale(0.99); }
 
 /* ── Botón Anular / Eliminar ── */
 .btn-eliminar {
@@ -345,25 +352,70 @@ body {
     transition: all 0.15s;
 }
 
-.btn-eliminar:hover {
-    background: #2a1a1a;
-    color: #ff8888;
+.btn-eliminar:hover { background: #2a1a1a; color: #ff8888; }
+.btn-eliminar:active { transform: scale(0.95); }
+
+.td-actions { display: flex; gap: 8px; align-items: center; }
+
+/* ── Navbar ── */
+.navbar {
+    width: 100%;
+    background: #111214;
+    border-bottom: 2px solid #2e3035;
+    padding: 0.75rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
-.btn-eliminar:active {
-    transform: scale(0.95);
-}
-
-/* ── Contenedor para alinear botones en la tabla ── */
-.td-actions {
+.nav-container {
+    width: 900px;
+    max-width: 95vw;
+    margin: 0 auto;
     display: flex;
-    gap: 8px;
+    justify-content: space-between;
     align-items: center;
 }
+
+.nav-brand { display: flex; align-items: center; gap: 12px; }
+
+.nav-brand-text {
+    color: #F5C400;
+    margin-top: 0;
+    font-size: 11px;
+}
+
+.nav-p-icon {
+    background: #F5C400;
+    color: #111214;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+}
+
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+    color: #888; text-decoration: none; font-size: 13px;
+    font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;
+    transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active { color: #F5C400; }
+
+.btn-logout {
+    background: transparent; border: 1px solid #2e3035; color: #888;
+    padding: 6px 14px; border-radius: 6px; font-size: 12px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+}
+.btn-logout:hover { border-color: #e07070; color: #e07070; background: rgba(224, 112, 112, 0.05); }
 
 /* ── Responsivo ── */
 @media (max-width: 520px) {
     .login-sidebar { display: none; }
     .login-panel   { padding: 2.5rem 1.75rem; }
 }
-
