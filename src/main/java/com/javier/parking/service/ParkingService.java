@@ -8,6 +8,8 @@ import com.javier.parking.repository.ParkingHistoryRepository;
 import com.javier.parking.repository.ParkingSlotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -78,6 +80,23 @@ public class ParkingService {
                 .build();
 
         parkingHistoryRepository.save(history);
+        parkingSlotRepository.delete(slot);
+        datosBloqueados.remove(plate);
+    }
+
+    public void deleteEntry(String plate) {
+        ParkingSlot slot = findByPlate(plate);
+        long minutos = Duration.between(slot.getEntryTime(), LocalDateTime.now()).toMinutes();
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isAdmin = auth != null && auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin && minutos > 5) {
+            throw new RuntimeException("Seguridad: Han pasado más de 5 minutos. Solo un Administrador puede eliminar este registro.");
+        }
+
         parkingSlotRepository.delete(slot);
         datosBloqueados.remove(plate);
     }

@@ -1,13 +1,107 @@
 package com.javier.parking.controller;
 
+import com.javier.parking.model.ParkingHistory;
+import com.javier.parking.model.ParkingSlot;
+import com.javier.parking.model.PaymentMethod;
+import com.javier.parking.repository.ParkingHistoryRepository;
+import com.javier.parking.service.AppSettingsService;
+import com.javier.parking.service.ParkingService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 
 @Controller
 public class DashboardController {
 
+    @Autowired
+    private ParkingService parkingService;
+
+    @Autowired
+    private AppSettingsService appSettingsService;
+
+    @Autowired
+    private ParkingHistoryRepository parkingHistoryRepository;
+
     @GetMapping("/dashboard")
-    public String dashboard() {
+    public String dashboard(Model model) {
+        model.addAttribute("activeVehicles", parkingService.findAll());
+        model.addAttribute("settings", appSettingsService.getSettings());
+
+        // Estadisticas del dia
+        LocalDateTime startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+        List<ParkingHistory> todayHistory = parkingHistoryRepository.findByExitTimeBetween(startOfDay, endOfDay);
+
+        long vehiclesToday = todayHistory.size();
+        double earningsToday = todayHistory.stream().mapToDouble(ParkingHistory::getCost).sum();
+
+        model.addAttribute("vehiclesToday", vehiclesToday);
+        model.addAttribute("earningsToday", earningsToday);
+
         return "dashboard";
+    }
+
+    @PostMapping("/dashboard/entry")
+    public String registerEntry(@RequestParam String plate, RedirectAttributes redirectAttributes) {
+        try {
+            ParkingSlot slot = ParkingSlot.builder()
+                    .plate(plate.toUpperCase())
+                    .build();
+            parkingService.registerEntry(slot);
+            redirectAttributes.addFlashAttribute("successMessage", "Patente " + plate + " ingresada correctamente.");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        return "redirect:/dashboard";
+    }
+
+    @PostMapping("/dashboard/calculate")
+    public String calculateCost(@RequestParam String plate, RedirectAttributes redirectAttributes) {
+        try {
+            double cost = parkingService.calculateCost(plate);
+            // Estos atributos activan el th:if="${checkoutPlate != null}" en tu HTML
+            redirectAttributes.addFlashAttribute("checkoutPlate", plate);
+            redirectAttributes.addFlashAttribute("checkoutCost", cost);
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        return "redirect:/dashboard";
+    }
+
+    @PostMapping("/dashboard/exit")
+    public String registerExit(@RequestParam String plate, @RequestParam PaymentMethod paymentMethod, RedirectAttributes redirectAttributes) {
+        try {
+            parkingService.registerExit(plate, paymentMethod);
+            redirectAttributes.addFlashAttribute("successMessage", "Salida registrada correctamente. Cobro exitoso.");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        return "redirect:/dashboard";
+    }
+
+    @PostMapping("/dashboard/delete")
+    public String delete(@RequestParam String plate, RedirectAttributes ra) {
+        try {
+            parkingService.deleteEntry(plate);
+            ra.addFlashAttribute("successMessage", "Registro eliminado.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        return "redirect:/dashboard";
+    }
+
+    @PostMapping("/dashboard/cancel-checkout")
+    public String cancelCheckout(@RequestParam String plate) {
+        parkingService.cancelFreeze(plate);
+        return "redirect:/dashboard";
     }
 }

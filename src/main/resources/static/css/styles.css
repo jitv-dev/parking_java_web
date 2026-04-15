@@ -137,8 +137,233 @@ body {
 .btn-entrar:hover  { background: #e6b800; }
 .btn-entrar:active { transform: scale(0.99); }
 
+/* ── Dashboard Layout & Stats ── */
+.dashboard-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 900px;
+    max-width: 95vw;
+    margin: 2rem auto;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.stat-card {
+    background: #111214;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 4px solid #F5C400;
+}
+
+.stat-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2rem;
+    color: #fff;
+}
+
+.stat-label {
+    color: #888;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* ── Tabla de Vehículos ── */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    color: #f3f4f6;
+}
+
+.data-table th {
+    text-align: left;
+    padding: 12px;
+    color: #F5C400;
+    border-bottom: 2px solid #2e3035;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.data-table td {
+    padding: 12px;
+    border-bottom: 1px solid #1c1e22;
+    font-size: 14px;
+}
+
+.btn-action {
+    background: #F5C400;
+    color: #111214;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    transition: background 0.15s, transform 0.1s;
+}
+
+.btn-action:hover {
+    background: #e6b800;
+}
+
+.btn-action:active {
+    transform: scale(0.95);
+}
+
+/* ── Variantes y Utilidades para el Dashboard ── */
+.dashboard-card { width: 100%; }
+.dashboard-sidebar { width: 150px; }
+.sidebar-p-small { font-size: 60px; }
+
+.alert-success {
+    background: #1a2a1a;
+    border: 1px solid #205a20;
+    color: #70c070;
+    font-size: 13px;
+    padding: 9px 13px;
+    border-radius: 6px;
+    margin-bottom: 1.25rem;
+}
+
+/* --- Títulos de Panel en Dashboard --- */
+.panel-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin-bottom: 0;
+}
+
+/* --- Ajuste de Alertas en Dashboard --- */
+.mt-dashboard-alert {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+/* Si no hay mensaje, el formulario necesita algo de aire respecto al título */
+.panel-title + .form-inline {
+    margin-top: 1.5rem;
+}
+
+.form-inline { display: flex; gap: 10px; align-items: flex-end; }
+.field-inline { flex: 1; margin-bottom: 0; }
+.btn-inline { width: auto; margin-top: 0; padding: 11px 25px; }
+
+.panel-rounded { border-radius: 12px; }
+.title-small { font-size: 20px; margin-bottom: 0; }
+.header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+
+.td-bold { font-weight: 500; letter-spacing: 0.05em; }
+.form-action { display: inline; }
+.td-empty { text-align: center; color: #6b7280; padding: 2rem; }
+
+/* ── Buscador ── */
+.search-container { margin-bottom: 1.5rem; width: 100%; }
+.search-input {
+    width: 100%;
+    background: #1c1e22;
+    border: 1px solid #2e3035;
+    color: #f3f4f6;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+.search-input:focus { border-color: #F5C400; box-shadow: 0 0 0 2px rgba(245, 196, 0, 0.1); }
+.search-input::placeholder { color: #4b5563; }
+
+/* ── Modal de Cobro ── */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85); /* Fondo oscuro semitransparente */
+    backdrop-filter: blur(4px);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #F5C400; /* Fondo amarillo para destacar */
+    padding: 2.5rem;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90vw;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+.modal-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 30px; text-transform: uppercase;
+    color: #111214; margin-bottom: 1.5rem;
+}
+
+.checkout-details {
+    background: rgba(17, 18, 20, 0.1); /* Fondo sutilmente oscuro */
+    padding: 1.5rem; border-radius: 8px; color: #111214;
+    margin-bottom: 1.5rem;
+}
+
+.checkout-details p { margin-bottom: 0.5rem; font-size: 15px; font-weight: 500;}
+.checkout-details strong { font-size: 24px; font-family: 'Barlow Condensed', sans-serif; }
+
+.timer-text { font-size: 13px !important; color: #5a4800; font-weight: 700; margin-top: 1rem; }
+
+/* Ajustes de inputs dentro del modal amarillo */
+.modal-content select.search-input {
+    background: #ffffff; color: #111214; border: 1px solid #c29b00;
+}
+.modal-content select.search-input:focus { border-color: #111214; box-shadow: none; }
+
+.btn-cancelar {
+    width: 100%; background: #111214; color: #F5C400;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px;
+    text-transform: uppercase; border: none; padding: 13px; border-radius: 6px;
+    cursor: pointer; margin-top: 10px; transition: transform 0.1s;
+}
+.btn-cancelar:active { transform: scale(0.99); }
+
+/* ── Botón Anular / Eliminar ── */
+.btn-eliminar {
+    background: transparent;
+    color: #e07070;
+    border: 1px solid #5a2020;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    transition: all 0.15s;
+}
+
+.btn-eliminar:hover {
+    background: #2a1a1a;
+    color: #ff8888;
+}
+
+.btn-eliminar:active {
+    transform: scale(0.95);
+}
+
+/* ── Contenedor para alinear botones en la tabla ── */
+.td-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
 /* ── Responsivo ── */
 @media (max-width: 520px) {
     .login-sidebar { display: none; }
     .login-panel   { padding: 2.5rem 1.75rem; }
 }
+
