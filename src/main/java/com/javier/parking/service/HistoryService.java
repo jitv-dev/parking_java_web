@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Transactional
@@ -20,5 +21,9 @@ public class HistoryService {
 
     public List<ParkingHistory> findByPlate(String plate) {
         return parkingHistoryRepository.findByPlate(plate);
+    }
+
+    public List<ParkingHistory> findByExitTimeBetween(LocalDateTime start, LocalDateTime end) {
+        return parkingHistoryRepository.findByExitTimeBetween(start, end);
     }
 }

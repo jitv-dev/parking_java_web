@@ -3,8 +3,8 @@ package com.javier.parking.controller;
 import com.javier.parking.model.ParkingHistory;
 import com.javier.parking.model.ParkingSlot;
 import com.javier.parking.model.PaymentMethod;
-import com.javier.parking.repository.ParkingHistoryRepository;
 import com.javier.parking.service.AppSettingsService;
+import com.javier.parking.service.HistoryService;
 import com.javier.parking.service.ParkingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,7 +29,7 @@ public class DashboardController {
     private AppSettingsService appSettingsService;
 
     @Autowired
-    private ParkingHistoryRepository parkingHistoryRepository;
+    private HistoryService historyService;
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
@@ -39,7 +39,7 @@ public class DashboardController {
         // Estadisticas del dia
         LocalDateTime startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
         LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
-        List<ParkingHistory> todayHistory = parkingHistoryRepository.findByExitTimeBetween(startOfDay, endOfDay);
+        List<ParkingHistory> todayHistory = historyService.findByExitTimeBetween(startOfDay, endOfDay);
 
         long vehiclesToday = todayHistory.size();
         double earningsToday = todayHistory.stream().mapToDouble(ParkingHistory::getCost).sum();
