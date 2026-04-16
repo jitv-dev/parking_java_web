@@ -40,4 +40,8 @@ public class ParkingHistory {
 
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+
+    @Column(nullable = false)
+    @NotBlank(message = "Operador no puede estar vacio")
+    private String operator;
 }

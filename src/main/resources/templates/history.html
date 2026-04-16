@@ -61,6 +61,7 @@
                 <th>Salida</th>
                 <th>Minutos</th>
                 <th>Método</th>
+                <th>Operador</th>
                 <th>Total</th>
             </tr>
             </thead>
@@ -71,10 +72,11 @@
                 <td th:text="${#temporals.format(record.exitTime,  'dd/MM HH:mm')}"></td>
                 <td th:text="${#numbers.formatDecimal(record.minutes, 1, 1)}"></td>
                 <td th:text="${record.paymentMethod}"></td>
-                <td th:text="${'$' + #numbers.formatDecimal(record.cost, 1, 0)}" class="td-bold"></td>
+                <td th:text="${record.operator}" class="td-operator"></td>
+                <td th:text="${'$' + #numbers.formatDecimal(record.cost, 1, 0)}" class="td-total-positive"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(history)}">
-                <td colspan="6" class="td-empty">No hay registros para mostrar.</td>
+                <td colspan="7" class="td-empty">No hay registros para mostrar.</td>
             </tr>
             </tbody>
         </table>

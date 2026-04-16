@@ -51,7 +51,6 @@ public class DashboardController {
     public String calculateCost(@RequestParam String plate, RedirectAttributes redirectAttributes) {
         try {
             double cost = parkingService.calculateCost(plate);
-            // Estos atributos activan el th:if="${checkoutPlate != null}" en tu HTML
             redirectAttributes.addFlashAttribute("checkoutPlate", plate);
             redirectAttributes.addFlashAttribute("checkoutCost", cost);
         } catch (RuntimeException e) {

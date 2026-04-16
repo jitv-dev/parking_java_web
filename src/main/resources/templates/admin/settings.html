@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking – Configuraciones</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments :: navbar('settings')}"></div>
+
+<div class="dashboard-layout">
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <p class="stat-label">Usuarios Registrados</p>
+            <p class="stat-value" th:text="${users.size()}">0</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">Costo por Minuto</p>
+            <p class="stat-value" th:text="${'$' + settings.costPerMinute}">$0</p>
+        </div>
+    </div>
+
+    <div th:if="${errorMessage}"   class="alert-error"   th:text="${errorMessage}"></div>
+    <div th:if="${successMessage}" class="alert-success" th:text="${successMessage}"></div>
+
+    <div class="login-card dashboard-card">
+        <div class="login-sidebar dashboard-sidebar">
+            <span class="sidebar-p sidebar-p-small">$</span>
+            <span class="sidebar-brand">Costo<br>Minuto</span>
+        </div>
+        <div class="login-panel">
+            <p class="panel-title">Actualizar Tarifa</p>
+            <form th:action="@{/admin/settings/cost}" method="post" class="form-inline mt-1-5">
+                <div class="field field-inline">
+                    <label for="costPerMinute">Nuevo costo por minuto ($)</label>
+                    <input type="number" id="costPerMinute" name="costPerMinute"
+                           step="0.01" min="0.01" required
+                           th:value="${settings.costPerMinute}"
+                           placeholder="Ej: 150.00" />
+                </div>
+                <button type="submit" class="btn-entrar btn-inline">Guardar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="login-card dashboard-card">
+        <div class="login-sidebar dashboard-sidebar">
+            <span class="sidebar-p sidebar-p-small">+</span>
+            <span class="sidebar-brand">Nuevo<br>Usuario</span>
+        </div>
+        <div class="login-panel">
+            <p class="panel-title">Crear Usuario</p>
+
+            <div th:if="${formErrors}" class="alert-error mt-1-5">
+                <span th:each="err, i : ${formErrors}">
+                    <span th:text="${err.defaultMessage}"></span><span th:if="${!i.last}"> · </span>
+                </span>
+            </div>
+
+            <form th:action="@{/admin/settings/create}" th:object="${userDTO}" method="post" class="form-inline-wrap">
+                <div class="field field-inline min-w-140">
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" th:field="*{username}" placeholder="nombre" autocomplete="off" />
+                </div>
+                <div class="field field-inline min-w-140">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" th:field="*{password}" placeholder="mín. 8 caracteres" />
+                </div>
+                <div class="field field-inline min-w-120">
+                    <label for="role">Rol</label>
+                    <select id="role" th:field="*{role}" class="search-input select-input-md">
+                        <option value="" disabled>Seleccionar...</option>
+                        <option value="ROLE_ADMIN">Admin</option>
+                        <option value="ROLE_WORKER">Worker</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-entrar btn-inline">Crear</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="login-panel panel-rounded">
+        <div class="header-flex">
+            <p class="login-title title-small">Usuarios del Sistema</p>
+        </div>
+
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.username}" class="td-bold"></td>
+                <td th:text="${user.role != null and user.role.name() == 'ROLE_ADMIN' ? 'Administrador' : 'Trabajador'}"></td>
+                <td>
+                    <span th:if="${user.enabled}" class="status-active">● Activo</span>
+                    <span th:unless="${user.enabled}" class="status-inactive">● Inactivo</span>
+                </td>
+                <td class="td-actions">
+                    <form th:action="@{'/admin/settings/toggle/' + ${user.id}}" method="post" class="form-action">
+                        <button type="submit" class="btn-action"
+                                th:text="${user.enabled ? 'Deshabilitar' : 'Habilitar'}">
+                        </button>
+                    </form>
+                    <form th:action="@{'/admin/settings/delete/' + ${user.id}}" method="post" class="form-action"
+                          onsubmit="return confirm('¿Seguro que deseas eliminar este usuario? Esta acción no se puede deshacer.');">
+                        <button type="submit" class="btn-eliminar">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(users)}">
+                <td colspan="4" class="td-empty">No hay usuarios registrados.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>

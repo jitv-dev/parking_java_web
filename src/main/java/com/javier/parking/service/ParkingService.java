@@ -70,6 +70,12 @@ public class ParkingService {
             throw new RuntimeException("El costo expiró o no fue calculado, consulte nuevamente");
         }
 
+        String currentUser = "Desconocido";
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            currentUser = auth.getName();
+        }
+
         ParkingHistory history = ParkingHistory.builder()
                 .plate(slot.getPlate())
                 .entryTime(slot.getEntryTime())
@@ -77,6 +83,7 @@ public class ParkingService {
                 .minutes(datos.minutes())
                 .cost(datos.costo())
                 .paymentMethod(paymentMethod)
+                .operator(currentUser)
                 .build();
 
         parkingHistoryRepository.save(history);

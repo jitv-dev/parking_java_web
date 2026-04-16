@@ -19,7 +19,7 @@
                 <a th:href="@{/history}" th:classappend="${activePage == 'history' ? 'active' : ''}">Historial</a>
             </li>
             <li sec:authorize="hasRole('ADMIN')">
-                <a th:href="@{/admin/users}" th:classappend="${activePage == 'users' ? 'active' : ''}">Usuarios</a>
+                <a th:href="@{/admin/settings}" th:classappend="${activePage == 'settings' ? 'active' : ''}">Configuraciones</a>
             </li>
         </ul>
 

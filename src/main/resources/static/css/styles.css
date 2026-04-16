@@ -414,6 +414,55 @@ body {
 }
 .btn-logout:hover { border-color: #e07070; color: #e07070; background: rgba(224, 112, 112, 0.05); }
 
+/* ── Utilidades para Panel de Administración ── */
+.mt-1-5 {
+    margin-top: 1.5rem !important;
+}
+
+.min-w-140 {
+    min-width: 140px;
+}
+
+.min-w-120 {
+    min-width: 120px;
+}
+
+.form-inline-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+    margin-top: 1.5rem;
+}
+
+.select-input-md {
+    padding: 11px 14px;
+}
+
+/* ── Estados de Usuario ── */
+.status-active {
+    color: #70c070;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.status-inactive {
+    color: #e07070;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* ── Estilos para el Historial ── */
+.td-operator {
+    color: #888;
+    font-size: 13px;
+}
+
+.td-total-positive {
+    color: #70c070;
+    font-weight: bold;
+}
+
 /* ── Responsivo ── */
 @media (max-width: 520px) {
     .login-sidebar { display: none; }
