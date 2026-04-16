@@ -11,5 +11,76 @@
 <body>
 <div th:replace="~{fragments :: navbar('history')}"></div>
 
+<div class="dashboard-layout">
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <p class="stat-label">Registros encontrados</p>
+            <p class="stat-value" th:text="${history.size()}">0</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">Total recaudado</p>
+            <p class="stat-value" th:text="${'$' + #numbers.formatDecimal(totalEarnings, 1, 0)}">$0</p>
+        </div>
+    </div>
+
+    <!-- Panel principal -->
+    <div class="login-panel panel-rounded">
+
+        <div class="header-flex">
+            <p class="login-title title-small">Historial de Salidas</p>
+        </div>
+
+        <!-- Filtro por fecha -->
+        <form th:action="@{/history}" method="get" class="form-inline" style="margin-bottom: 1.5rem;">
+            <div class="field field-inline" style="margin-bottom: 0;">
+                <label for="date">Filtrar por día</label>
+                <input type="date" id="date" name="date" class="search-input"
+                       th:value="${selectedDate}"
+                       style="color-scheme: dark;" />
+            </div>
+            <button type="submit" class="btn-entrar btn-inline">Filtrar</button>
+            <a th:href="@{/history}" class="btn-entrar btn-inline"
+               style="text-decoration: none; text-align: center; background: #1c1e22; color: #888; border: 1px solid #2e3035;">
+                Ver Todo
+            </a>
+        </form>
+
+        <!-- Indicador de filtro activo -->
+        <div th:if="${selectedDate != null}" class="alert-success" style="margin-bottom: 1.5rem;">
+            Mostrando registros del día: <strong th:text="${#temporals.format(selectedDate, 'dd/MM/yyyy')}"></strong>
+        </div>
+
+        <!-- Tabla -->
+        <table class="data-table" id="vehiclesTable">
+            <thead>
+            <tr>
+                <th>Patente</th>
+                <th>Entrada</th>
+                <th>Salida</th>
+                <th>Minutos</th>
+                <th>Método</th>
+                <th>Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="record : ${history}">
+                <td th:text="${record.plate}" class="td-bold"></td>
+                <td th:text="${#temporals.format(record.entryTime, 'dd/MM HH:mm')}"></td>
+                <td th:text="${#temporals.format(record.exitTime,  'dd/MM HH:mm')}"></td>
+                <td th:text="${#numbers.formatDecimal(record.minutes, 1, 1)}"></td>
+                <td th:text="${record.paymentMethod}"></td>
+                <td th:text="${'$' + #numbers.formatDecimal(record.cost, 1, 0)}" class="td-bold"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(history)}">
+                <td colspan="6" class="td-empty">No hay registros para mostrar.</td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
 </body>
 </html>

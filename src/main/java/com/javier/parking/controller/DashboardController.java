@@ -1,6 +1,5 @@
 package com.javier.parking.controller;
 
-import com.javier.parking.model.ParkingHistory;
 import com.javier.parking.model.ParkingSlot;
 import com.javier.parking.model.PaymentMethod;
 import com.javier.parking.service.AppSettingsService;
@@ -13,11 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
 
 @Controller
 public class DashboardController {
@@ -35,17 +29,6 @@ public class DashboardController {
     public String dashboard(Model model) {
         model.addAttribute("activeVehicles", parkingService.findAll());
         model.addAttribute("settings", appSettingsService.getSettings());
-
-        // Estadisticas del dia
-        LocalDateTime startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
-        LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
-        List<ParkingHistory> todayHistory = historyService.findByExitTimeBetween(startOfDay, endOfDay);
-
-        long vehiclesToday = todayHistory.size();
-        double earningsToday = todayHistory.stream().mapToDouble(ParkingHistory::getCost).sum();
-
-        model.addAttribute("vehiclesToday", vehiclesToday);
-        model.addAttribute("earningsToday", earningsToday);
 
         return "dashboard";
     }
