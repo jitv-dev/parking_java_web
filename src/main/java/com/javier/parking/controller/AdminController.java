@@ -93,6 +93,6 @@ public class AdminController {
         } catch (RuntimeException e) {
             ra.addFlashAttribute("errorMessage", e.getMessage());
         }
-        return "redirect:/dashboard";
+        return "redirect:/admin/settings";
     }
 }
