@@ -21,14 +21,28 @@
             <li sec:authorize="hasRole('ADMIN')">
                 <a th:href="@{/admin/settings}" th:classappend="${activePage == 'settings' ? 'active' : ''}">Configuraciones</a>
             </li>
+            <li class="nav-logout-mobile">
+                <form th:action="@{/logout}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="btn-logout">Cerrar Sesión →</button>
+                </form>
+            </li>
         </ul>
 
         <div class="nav-actions">
             <form th:action="@{/logout}" method="post">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                <button type="submit" class="btn-logout">Cerrar Sesión →</button>
+                <button type="submit" class="btn-logout">Cerrar Sesión</button>
             </form>
         </div>
+
+
+
+        <button class="nav-hamburger" id="navToggle" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </div>
 </nav>
 

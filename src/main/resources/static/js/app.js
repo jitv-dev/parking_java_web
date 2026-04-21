@@ -60,4 +60,13 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }, 1000);
     }
+
+    const navToggle = document.getElementById('navToggle');
+    const navbar = document.querySelector('.navbar');
+
+    if (navToggle) {
+        navToggle.addEventListener('click', () => {
+            navbar.classList.toggle('nav-mobile-open');
+        });
+    }
 });
