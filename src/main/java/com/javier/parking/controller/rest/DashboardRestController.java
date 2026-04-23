@@ -20,11 +20,19 @@ public class DashboardRestController {
     @Autowired
     private AppSettingsService appSettingsService;
 
-    @GetMapping("/dashboard")
-    public ResponseEntity<?> dashboard() {
+    @GetMapping
+    public ResponseEntity<?> getActiveVehicles() {
+        try {
+            return ResponseEntity.ok(parkingService.findAll());
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/settings")
+    public ResponseEntity<?> getSettings() {
         try {
             return ResponseEntity.ok(Map.of(
-                    "activeVehicles", parkingService.findAll(),
                     "costPerMinute", appSettingsService.getSettings().getCostPerMinute()
             ));
         } catch (RuntimeException e) {
@@ -45,11 +53,21 @@ public class DashboardRestController {
         }
     }
 
-    @GetMapping("/calculate/{plate}")
+    @PostMapping("/calculate/{plate}")
     public ResponseEntity<?> calculateCost(@PathVariable String plate) {
         try {
             double cost = parkingService.calculateCost(plate);
             return ResponseEntity.ok(Map.of("plate", plate, "cost", cost));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/calculate/{plate}")
+    public ResponseEntity<?> cancelFreeze(@PathVariable String plate) {
+        try {
+            parkingService.cancelFreeze(plate);
+            return ResponseEntity.ok(Map.of("message", "Cotización cancelada."));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
@@ -71,18 +89,8 @@ public class DashboardRestController {
     @DeleteMapping("/{plate}")
     public ResponseEntity<?> deleteEntry(@PathVariable String plate) {
         try {
-            parkingService.deleteEntry(plate);
+            parkingService.deleteEntry(plate.toUpperCase());
             return ResponseEntity.ok(Map.of("message", "Registro eliminado correctamente."));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
-    }
-
-    @PostMapping("/cancel/{plate}")
-    public ResponseEntity<?> cancelFreeze(@PathVariable String plate) {
-        try {
-            parkingService.cancelFreeze(plate);
-            return ResponseEntity.ok(Map.of("message", "Cotización cancelada."));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
