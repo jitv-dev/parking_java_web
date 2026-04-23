@@ -26,4 +26,11 @@ public class HistoryService {
     public List<ParkingHistory> findByExitTimeBetween(LocalDateTime start, LocalDateTime end) {
         return parkingHistoryRepository.findByExitTimeBetween(start, end);
     }
+
+    public void deleteById(Long id) {
+        if (!parkingHistoryRepository.existsById(id)) {
+            throw new RuntimeException("Registro no encontrado con ID: " + id);
+        }
+        parkingHistoryRepository.deleteById(id);
+    }
 }
