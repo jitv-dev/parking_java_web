@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,10 +36,13 @@ public class HistoryRestController {
 
             double totalEarnings = history.stream().mapToDouble(ParkingHistory::getCost).sum();
 
-            return ResponseEntity.ok(Map.of(
-                    "history", history,
-                    "totalEarnings", totalEarnings
-            ));
+            Map<String, Object> response = new HashMap<>();
+
+            response.put("history", history);
+            response.put("totalEarnings", totalEarnings);
+            response.put("selectedDate", date);
+
+            return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
