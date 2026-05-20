@@ -24,13 +24,14 @@ public class AdminRestController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // ------ Usuarios ------
+
     @GetMapping
     public ResponseEntity<?> getSettings() {
         try {
-            // En REST no necesitas el DTO en la respuesta porque React construye su propio formulario
             return ResponseEntity.ok(Map.of(
                     "users", userService.findAll(),
-                    "settings", appSettingsService.getSettings().getCostPerMinute()
+                    "settings", appSettingsService.getSettings()
             ));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
@@ -38,7 +39,7 @@ public class AdminRestController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO){
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO) {
         try {
             userService.save(User.builder()
                     .username(userDTO.getUsername())
@@ -47,6 +48,42 @@ public class AdminRestController {
                     .enabled(true)
                     .build());
             return ResponseEntity.status(201).body(Map.of("message", "Usuario creado correctamente"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> toggleUser(@PathVariable Long id) {
+        try {
+            User user = userService.findById(id);
+            user.setEnabled(!user.isEnabled());
+            userService.update(id, user);
+            String estado = user.isEnabled() ? "habilitado" : "deshabilitado";
+            return ResponseEntity.ok(Map.of("message", "Usuario " + estado + " correctamente."));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        try {
+            userService.delete(id);
+            return ResponseEntity.ok(Map.of("message", "Usuario eliminado correctamente."));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    // ------ Configuracion ------
+
+    @PutMapping("/cost")
+    public ResponseEntity<?> updateCost(@RequestBody Map<String, Double> body) {
+        try {
+            Double cost = body.get("costPerMinute");
+            appSettingsService.updateCost(cost);
+            return ResponseEntity.ok(Map.of("message", "Costo actualizado a $" + cost + " por minuto."));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
