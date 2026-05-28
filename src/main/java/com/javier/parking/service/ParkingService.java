@@ -107,4 +107,14 @@ public class ParkingService {
         parkingSlotRepository.delete(slot);
         datosBloqueados.remove(plate);
     }
+
+    public void updatePlate(Long id, String newPlate) {
+        ParkingSlot slot = parkingSlotRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Registro no encontrado"));
+        if (parkingSlotRepository.findByPlate(newPlate).isPresent()) {
+            throw new RuntimeException("Ya existe un vehículo con esa patente");
+        }
+        slot.setPlate(newPlate.toUpperCase());
+        parkingSlotRepository.save(slot);
+    }
 }

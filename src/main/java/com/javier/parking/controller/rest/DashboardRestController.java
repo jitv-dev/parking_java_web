@@ -95,4 +95,14 @@ public class DashboardRestController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePlate(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        try {
+            parkingService.updatePlate(id, body.get("plate"));
+            return ResponseEntity.ok(Map.of("message", "Patente actualizada correctamente"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }

@@ -10,6 +10,61 @@ async function fetchParkingData() {
     return { vehicles: v || [], settings: s || { costPerMinute: 0 } };
 }
 
+function EditRow({ vehicle, onCalculate, onDelete, onRefresh }) {
+    const [editing, setEditing] = useState(false);
+    const [newPlate, setNewPlate] = useState(vehicle.plate);
+
+    async function handleSave() {
+        try {
+            await api('PUT', `/api/parking/${vehicle.id}`, { plate: newPlate });
+            setEditing(false);
+            await onRefresh();
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+
+    function handleCancel() {
+        setNewPlate(vehicle.plate);
+        setEditing(false);
+    }
+
+    return (
+        <tr>
+            <td className="td-bold">
+                {editing ? (
+                    <input
+                        value={newPlate}
+                        onChange={e => setNewPlate(e.target.value.toUpperCase())}
+                        style={{
+                            background: '#1c1e22', border: '1px solid #F5C400',
+                            color: '#f3f4f6', padding: '4px 8px', borderRadius: 4, fontFamily: 'inherit'
+                        }}
+                        autoFocus
+                    />
+                ) : (
+                    vehicle.plate
+                )}
+            </td>
+            <td>{new Date(vehicle.entryTime).toLocaleTimeString()}</td>
+            <td className="td-actions">
+                {editing ? (
+                    <>
+                        <button className="btn-action" onClick={handleSave}>Guardar</button>
+                        <button className="btn-eliminar" onClick={handleCancel}>Cancelar</button>
+                    </>
+                ) : (
+                    <>
+                        <button className="btn-action" onClick={() => onCalculate(vehicle.plate)}>Cobrar</button>
+                        <button className="btn-eliminar" onClick={() => setEditing(true)}>Editar</button>
+                        <button className="btn-eliminar" onClick={() => onDelete(vehicle.plate)}>Eliminar</button>
+                    </>
+                )}
+            </td>
+        </tr>
+    );
+}
+
 export default function DashboardPage() {
     const [vehicles, setVehicles] = useState([]);
     const [settings, setSettings] = useState({ costPerMinute: 0 });
@@ -94,6 +149,12 @@ export default function DashboardPage() {
         } catch (err) { showErr(err.message); }
     }
 
+    async function handleRefresh() {
+        const data = await fetchParkingData();
+        setVehicles(data.vehicles);
+        setSettings(data.settings);
+    }
+
     const filtered = vehicles.filter(v =>
         v.plate.toLowerCase().includes(search.toLowerCase())
     );
@@ -173,14 +234,13 @@ export default function DashboardPage() {
                             </tr>
                         ) : (
                             filtered.map(v => (
-                                <tr key={v.id}>
-                                    <td className="td-bold">{v.plate}</td>
-                                    <td>{new Date(v.entryTime).toLocaleTimeString()}</td>
-                                    <td className="td-actions">
-                                        <button className="btn-action" onClick={() => handleCalculate(v.plate)}>Cobrar</button>
-                                        <button className="btn-eliminar" onClick={() => handleDelete(v.plate)}>Eliminar</button>
-                                    </td>
-                                </tr>
+                                <EditRow
+                                    key={v.id}
+                                    vehicle={v}
+                                    onCalculate={handleCalculate}
+                                    onDelete={handleDelete}
+                                    onRefresh={handleRefresh}
+                                />
                             ))
                         )}
                     </tbody>
