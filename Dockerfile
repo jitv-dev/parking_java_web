@@ -41,5 +41,11 @@ ENV JAVA_OPTS="-Xmx384m -Xms256m"
 # Render provee DATABASE_URL en formato postgresql://
 # Spring Boot necesita jdbc:postgresql://
 ENTRYPOINT ["sh", "-c", "\
-  JDBC_URL=$(echo $DATABASE_URL | sed 's|^postgresql://|jdbc:postgresql://|') && \
-  java $JAVA_OPTS -jar -Dspring.profiles.active=prod -Dspring.datasource.url=\"$JDBC_URL\" app.jar"]
+  JDBC_URL=$(echo $DATABASE_URL | sed 's|^postgresql://[^@]*@|jdbc:postgresql://|') && \
+  DB_USER=$(echo $DATABASE_URL | sed -n 's|.*://\\([^:]*\\):.*|\\1|p') && \
+  DB_PASS=$(echo $DATABASE_URL | sed -n 's|.*://[^:]*:\\([^@]*\\)@.*|\\1|p') && \
+  java $JAVA_OPTS -jar -Dspring.profiles.active=prod \
+    -Dspring.datasource.url=\"$JDBC_URL\" \
+    -Dspring.datasource.username=\"$DB_USER\" \
+    -Dspring.datasource.password=\"$DB_PASS\" \
+    app.jar"]
