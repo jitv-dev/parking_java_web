@@ -8,7 +8,7 @@ Sistema de gestión de estacionamiento con backend en Spring Boot (API REST) y f
 - Java 21
 - Spring Boot 4.0.5
 - Spring Security (BCrypt, roles, sesión por cookie)
-- Spring Data JPA + H2 (en memoria)
+- Spring Data JPA + H2 (desarrollo) / PostgreSQL (producción)
 - Lombok
 
 **Frontend**
@@ -58,6 +58,8 @@ Sistema de gestión de estacionamiento con backend en Spring Boot (API REST) y f
 
 ## Cómo ejecutar
 
+### Desarrollo local
+
 **Backend** (terminal 1):
 ```bash
 ./mvnw spring-boot:run
@@ -75,6 +77,40 @@ Consola H2: `http://localhost:8080/h2-console`
 - JDBC URL: `jdbc:h2:mem:parkingdb`
 - Usuario: `sa`
 - Contraseña: *(vacío)*
+
+### Deploy en Render
+
+El proyecto incluye `Dockerfile` y `render.yaml` para despliegue automático.
+
+**Opción 1: Blueprint automática**
+1. Subir el código a GitHub
+2. En Render, ir a **New > Blueprint** y seleccionar el repositorio
+3. Render crea automáticamente el Web Service y la base de datos PostgreSQL
+4. La URL del frontend se asigna en la sección **Environment** del servicio
+
+**Opción 2: Deploy manual**
+1. Crear una **PostgreSQL Database** gratuita en Render
+2. Copiar la **Internal Database URL**
+3. Crear un **Web Service** con imagen Docker desde el repositorio
+4. Configurar variables de entorno:
+   - `SPRING_PROFILES_ACTIVE` = `prod`
+   - `DATABASE_URL` = *(la URL de la database PostgreSQL)*
+5. Render construye y ejecuta el Dockerfile automáticamente
+
+**Credenciales por defecto (se crean automáticamente al iniciar):**
+
+| Usuario | Contraseña | Rol |
+|---------|-----------|------|
+| admin | Admin123 | Admin |
+| worker | Worker123 | Worker |
+
+**Arquitectura Docker (multi-stage):**
+
+| Etapa | Herramienta | Qué hace |
+|-------|-------------|----------|
+| Stage 1 | Node 20 Alpine | Compila el frontend React → `dist/` |
+| Stage 2 | Maven + JDK 21 | Copia `dist/` a `static/`, compila el JAR |
+| Stage 3 | JRE 21 Alpine | Ejecuta el JAR con perfil `prod` |
 
 ## Estructura del proyecto
 
@@ -99,7 +135,10 @@ parking/
 
 ## Notas
 
-- El frontend se comunica con el backend a través del proxy de Vite (puerto 3000 redirige a 8080)
+- En desarrollo, el frontend usa el proxy de Vite (puerto 3000 → 8080)
+- En producción, Spring Boot sirve el frontend y la API desde el mismo puerto
 - La autenticación usa sesión por cookie (`JSESSIONID`), no JWT
 - CSRF desactivado para todas las rutas `/api/**`
-- CORS configurado para `http://localhost:3000`
+- CORS configurable via propiedad `cors.allowed-origins` (default: `http://localhost:3000`)
+- Perfiles de Spring: `default` (H2 local) y `prod` (PostgreSQL en Render)
+- La base de datos PostgreSQL se crea automáticamente en Render al usar `render.yaml`

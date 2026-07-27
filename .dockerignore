@@ -1,0 +1,28 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.iws
+*.iml
+*.ipr
+
+# Backend compilado
+target/
+
+# Frontend
+parking-frontend/node_modules/
+parking-frontend/dist/
+parking-frontend/dist-ssr/
+
+# Documentacion
+README.md
+AGENTS.md
+HELP.md
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db

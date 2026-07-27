@@ -1,0 +1,6 @@
+- Usa siempre español neutro, sin modismos regionales (ni argentino, ni mexicano, ni español)
+- Explica el propósito de cada archivo o bloque de código nuevo antes de mostrar el código
+- Cuando haya varias formas de hacer algo, explica por qué elegiste una sobre la otra
+- No asumas conocimientos previos; si usas un concepto nuevo, explícalo brevemente
+- Si un cambio puede romper algo existente, adviértelo antes
+- Después de varios cambios, hace un resumen de todo lo que hicimos hasta ahora
