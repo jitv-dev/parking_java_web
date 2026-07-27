@@ -78,26 +78,38 @@ Consola H2: `http://localhost:8080/h2-console`
 - Usuario: `sa`
 - Contraseña: *(vacío)*
 
-### Deploy en Render
+### Deploy en Render (free tier)
 
-El proyecto incluye `Dockerfile` y `render.yaml` para despliegue automático.
+Deploy manual sin Blueprint (Blueprint requiere plan pago).
 
-**Opción 1: Blueprint automática**
-1. Subir el código a GitHub
-2. En Render, ir a **New > Blueprint** y seleccionar el repositorio
-3. Render crea automáticamente el Web Service y la base de datos PostgreSQL
-4. La URL del frontend se asigna en la sección **Environment** del servicio
+**Pasos:**
 
-**Opción 2: Deploy manual**
-1. Crear una **PostgreSQL Database** gratuita en Render
-2. Copiar la **Internal Database URL**
-3. Crear un **Web Service** con imagen Docker desde el repositorio
-4. Configurar variables de entorno:
-   - `SPRING_PROFILES_ACTIVE` = `prod`
-   - `DATABASE_URL` = *(la URL de la database PostgreSQL)*
-5. Render construye y ejecuta el Dockerfile automáticamente
+1. **Subir el código a GitHub**
 
-**Credenciales por defecto (se crean automáticamente al iniciar):**
+2. **Crear PostgreSQL Database** en Render:
+   - New > PostgreSQL
+   - Plan: **Free**
+   - Copiar la **Internal Database URL**
+
+3. **Crear Web Service** en Render:
+   - New > Web Service
+   - Connect tu repositorio GitHub
+   - Runtime: **Docker**
+   - Instance Type: **Free**
+   - Variables de entorno:
+     - `SPRING_PROFILES_ACTIVE` = `prod`
+     - `DATABASE_URL` = *(la URL del paso anterior)*
+   - Click **Create Web Service**
+
+4. **Esperar** el primer deploy (~5-10 min). El servicio se duerme tras 15 min de inactividad y tarda ~30s en despertar.
+
+**Limitaciones del free tier:**
+- 512 MB RAM, 0.1 CPU compartido
+- Se duerme tras 15 min sin tráfico (cold start de 30-60s)
+- PostgreSQL expira después de 90 días
+- 750 horas de compute al mes
+
+**Credenciales (se crean automáticamente al iniciar):**
 
 | Usuario | Contraseña | Rol |
 |---------|-----------|------|
@@ -141,4 +153,3 @@ parking/
 - CSRF desactivado para todas las rutas `/api/**`
 - CORS configurable via propiedad `cors.allowed-origins` (default: `http://localhost:3000`)
 - Perfiles de Spring: `default` (H2 local) y `prod` (PostgreSQL en Render)
-- La base de datos PostgreSQL se crea automáticamente en Render al usar `render.yaml`
